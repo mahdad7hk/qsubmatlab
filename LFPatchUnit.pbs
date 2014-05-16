@@ -16,31 +16,30 @@ MQS=iscpc45:1234
 
 workingDir=$PARAM2
 
+
 cd $workingDir
 #echo "running item $PARAM1" | socat - TCP-CONNECT:$MQS
 #echo "executed on $HOSTNAME" | socat - TCP-CONNECT:$MQS
 #echo "execution started at:  $(date)" | 
 #socat - TCP-CONNECT:$MQS
+
 echo "running item $PARAM1 " 
 
-echo "Start Time is:            " $(date)
-let START=$(date +%s)
-
-
 # note that before running matlab script, script path should be added to ~/matlab/startup.m
+# if the full address to the location of the script is given there is no need to add matlab to the startup file
 #module load matlab/R2014a
-#matlab -nodisplay -nojvm -nodesktop -singleCompThread -r
- 
-/usr/local/bin/matlab -nodisplay  -nosplash  < ~/tmp/mahdad/scripts/temp.m
+#matlab -nodisplay -nojvm -nodesktop -singleCompThread -r 
+#matlab -nodisplay  -nodesktop -nosplash -r "script$PARAM3($PARAM1)"
+
+/usr/local/bin/matlab -nodisplay  -nosplash -r "script$PARAM3($PARAM1)"
 
 #RES=results.txt
 
 
 #$prg | tee -a $RES | socat - TCP-CONNECT:$MQS
 
-# echo "execution finished at: $(date)"
+echo "execution finished at: $(date)"
 
-echo "End Time is:            " $(date)
 let STOP=$(date +%s)
 let TOTAL=$STOP-$START
 echo "execution time = $TOTAL seconds or"
