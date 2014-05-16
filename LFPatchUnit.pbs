@@ -1,0 +1,50 @@
+#PBS -q short
+#PBS -M mahdad.hosseinikamal@epfl.ch
+#PBS -l cput=0:45:00
+#PBS -l mem=4GB
+#PBS -l nodes=1:bit64
+# you want to receive an email messages when your job is started and when it's finished (or blocked)
+#PBS -m ae
+# all the messages (output and errors) must go in a single file
+#PBS -j oe
+# the name you want to assign to this job
+
+#prg=$HOME/work/expander-block-codes/expander-block-codes/simcodes
+
+prg="echo test=$PARAM1"
+MQS=iscpc45:1234
+
+workingDir=$PARAM2
+
+cd $workingDir
+#echo "running item $PARAM1" | socat - TCP-CONNECT:$MQS
+#echo "executed on $HOSTNAME" | socat - TCP-CONNECT:$MQS
+#echo "execution started at:  $(date)" | 
+#socat - TCP-CONNECT:$MQS
+echo "running item $PARAM1 " 
+
+echo "Start Time is:            " $(date)
+let START=$(date +%s)
+
+
+# note that before running matlab script, script path should be added to ~/matlab/startup.m
+#module load matlab/R2014a
+#matlab -nodisplay -nojvm -nodesktop -singleCompThread -r
+ 
+/usr/local/bin/matlab -nodisplay  -nosplash  < ~/tmp/mahdad/scripts/temp.m
+
+#RES=results.txt
+
+
+#$prg | tee -a $RES | socat - TCP-CONNECT:$MQS
+
+# echo "execution finished at: $(date)"
+
+echo "End Time is:            " $(date)
+let STOP=$(date +%s)
+let TOTAL=$STOP-$START
+echo "execution time = $TOTAL seconds or"
+let HOUR=$(echo "$TOTAL/3600" |bc)
+let MINS=$(echo "($TOTAL-(3600*$HOUR))/60" |bc)
+let SECS=$(echo "$TOTAL-(3600*$HOUR)-($MINS*60)"|bc)
+echo "$HOUR Hours, $MINS minutes, $SECS seconds"
